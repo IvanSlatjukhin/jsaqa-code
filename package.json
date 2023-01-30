@@ -1,7 +1,6 @@
 {
   "name": "jsaqa_3_3",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "jest"
@@ -14,5 +13,14 @@
   },
   "devDependencies": {
     "puppeteer": "^19.6.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvanSlatjukhin/jsaqa-code.git"
+  },
+  "bugs": {
+    "url": "https://github.com/IvanSlatjukhin/jsaqa-code/issues"
+  },
+  "homepage": "https://github.com/IvanSlatjukhin/jsaqa-code#readme",
+  "description": ""
 }
