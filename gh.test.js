@@ -1,67 +1,67 @@
 let page;
 
-afterEach(async() => {
-   await page.close();
- });
+const fish = (async (url, selector) => {
+  page = await browser.newPage();
+  await page.goto(url);
+  await page.waitForSelector(selector);
+  const title2 = await page.$(selector);
+  const value = await page.evaluate(el => el.textContent, title2);
+  return value;
+});
 
 describe("Github page tests", () => {
+
   beforeEach(async () => {
     page = await browser.newPage();
     await page.goto("https://github.com/team");
- });
+  });
+
+  afterEach(() => {
+    page.close();
+  });
 
   test("The h1 header content'", async () => {
-    await page.setDefaultTimeout(3000);
     const firstLink = await page.$("header div div a");
     await firstLink.click();
     await page.waitForSelector('h1');
-    const title = await page.title();
-    expect(title).toEqual('GitHub for teams · Build like the best teams on the planet · GitHub');
-  });
+
+    const headerText = await page.$("h1");
+    const value = await page.evaluate(el => el.textContent, headerText);
+    expect(value).toEqual('Build like the best teams on the planet');
+  }, 5000);
 
   test("The first link attribute", async () => {
-    await page.setDefaultTimeout(2000);
     const actual = await page.$eval("a", link => link.getAttribute('href') );
     expect(actual).toEqual("#start-of-content");
-  });
+  }, 5000);
 
   test("The page contains Sign in button", async () => {
-    await page.setDefaultTimeout(2000);
     const btnSelector = ".btn-large-mktg.btn-mktg";
     await page.waitForSelector(btnSelector, {
       visible: true,
     });
     const actual = await page.$eval(btnSelector, link => link.textContent);
-    expect(actual).toContain("Get started with Team")
-  });
-  
+    expect(actual).toContain("Sign up for free")
+  }, 5000);
 });
 
+describe("Second task - add 3 new tests", () => {
 
-describe("Actions Page", () => {
-  beforeEach(async () => {
-    page = await browser.newPage();
-    await page.goto("https://github.com/features/actions");
+  afterEach(() => {
+    page.close();
   });
 
-  test.only("Header Menu Text", async () => {
-     const headerElement = await page.waitForXPath("//a[contains(@class, 'active')]");
-     const elementText = await headerElement.evaluate (el => el.textContent);
-     expect(elementText).toEqual("Actions");
+  test("Check h1 on first page", async () => {
+    expect(await fish("https://github.com/marketplace?type=actions", "h1")).toEqual("Actions");
   });
 
-  test("Check Description Text", async () => {
-      await page.setDefaultTimeout(4000);
-      const description = "p.f3-mktg";
-      const text = await page.$eval(description, (header) => header.innerText);
-      expect(text).toContain("GitHub Actions makes it easy to automate all your software workflows, now with world-class CI/CD. Build, test, and deploy your code right from GitHub. Make code reviews, branch management, and issue triaging work the way you want.");
+  test("Check h1 on first page", async () => {
+    expect(await fish("https://github.com/customer-stories?type=team", "h1"))
+    .toEqual("TELUS streamlines productivity by replacing their DevOps tools with GitHub");
   });
 
-  test("Check Button Text", async () => {
-      await page.setDefaultTimeout(2000);
-      const button = "a.btn-mktg.btn-large-mktg";
-      const buttonText = await page.$eval(button, el => el.textContent);
-      expect(buttonText).toContain("Get started with Actions");
+  test("Check h1 on first page", async () => {
+    expect(await fish("https://github.com/features/security", "h1")).toEqual(`Secure at every`+String.fromCharCode(160)+`step`);
   });
 
 });
